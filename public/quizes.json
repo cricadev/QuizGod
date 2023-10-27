@@ -19,6 +19,26 @@
     {
       "id": "5",
       "title": "Space Quiz"
+    },
+    {
+      "id": "6",
+      "title": "Math Quiz"
+    },
+    {
+      "id": "7",
+      "title": "Computer Science Quiz"
+    },
+    {
+      "id": "8",
+      "title": "History Quiz"
+    },
+    {
+      "id": "9",
+      "title": "Geography Quiz"
+    },
+    {
+      "id": "10",
+      "title": "Literature Quiz"
     }
   ],
   "answers": [

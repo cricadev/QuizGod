@@ -9,7 +9,7 @@
 }
 
 body {
-  @apply bg-bgPrimary;
+  @apply bg-bgPrimary overflow-hidden;
 }
 
 .dark body {

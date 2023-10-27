@@ -9,7 +9,7 @@
         <ToggleTheme></ToggleTheme>
       </div>
       <div class="carousel">
-        <div class="carousel--track" ref="carousel">
+        <div v-for="car in 2" :key="car" class="carousel--track" :class="'carousel--track--' + car" ref="carousel">
           <div class="carousel--item" v-for="q in quizes" :key="q.id">
             <h1>
               {{ q.title }}
@@ -53,18 +53,26 @@ getAnswers()
 
 }
 
-.container-grid {
-  @apply grid place-items-center w-full h-screen grid-cols-1;
+
+
+main {
+  @apply flex flex-col w-full h-screen justify-center items-center;
 
 }
 
-.carousel--track {
-  @apply flex flex-row items-center justify-center w-full overflow-hidden;
-  animation: infinite-move infinite;
-  animation-duration: 20s;
-  animation-timing-function: linear;
+.carousel {
+  @apply flex flex-row items-center justify-center w-full overflow-hidden mx-auto relative gap-2 h-96;
+}
 
-  @keyframes infinite-move {
+.carousel--track {
+  @apply flex flex-row items-center justify-center w-screen overflow-hidden absolute top-0 left-0 h-full;
+
+}
+
+.carousel--track--1 {
+  animation: infinite-move-1 10s linear infinite;
+
+  @keyframes infinite-move-1 {
     0% {
       transform: translateX(0%);
     }
@@ -75,8 +83,27 @@ getAnswers()
 
     100% {
       transform: translateX(-100%);
-      /* Move the first item to the end of the carousel */
-      flex-direction: row-reverse;
+
+    }
+  }
+}
+
+.carousel--track--2 {
+  animation: infinite-move-2 10s linear infinite;
+
+  /* Set the delay to match the duration of the first track's animation */
+
+  @keyframes infinite-move-2 {
+    0% {
+      transform: translateX(100%);
+    }
+
+    50% {
+      transform: translateX(50%);
+    }
+
+    100% {
+      transform: translateX(0%);
     }
   }
 }
