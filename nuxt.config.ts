@@ -5,7 +5,8 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@nuxtjs/color-mode",
     "@vueuse/nuxt",
-    "@pinia/nuxt"
+    "@pinia/nuxt",
+    'nuxt-chatgpt',
   ],
   colorMode: {
     preference: 'system', // default value of $colorMode.preference
@@ -20,4 +21,7 @@ export default defineNuxtConfig({
   pinia: {
     storesDirs: ['./stores/**'],
   },
+  chatgpt: {
+    apiKey: process.env.CHATGPT_API_KEY,
+  }
 })
