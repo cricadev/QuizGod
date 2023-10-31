@@ -6,7 +6,16 @@
         <pre>
       {{ data }}
      </pre>
-        <Question :questions="data.questions"></Question>
+        <Suspense>
+          <Question :questions="data.questions"></Question>
+
+          <template #fallback>
+
+            Loading...
+
+          </template>
+        </Suspense>
+
       </div>
       <div v-else>
         <div class="loader">
@@ -17,7 +26,7 @@
             <div class="loader-line-wrap">
               <div class="loader-line"></div>
             </div>
-            <div class="loader-line-wrap">
+            <div class="load  er-line-wrap">
               <div class="loader-line"></div>
             </div>
             <div class="loader-line-wrap">
@@ -38,23 +47,16 @@ const loading = ref(true)
 const route = useRoute();
 //const data = { "quiz": { "id": 1, "topic": "Physics", "questions": [{ "questionId": 1, "question": "What is the SI unit of force?", "answers": ["A) Newton", "B) Joule", "C) Watt", "D) Pascal"], "correctAnswer": "A) Newton" }, { "questionId": 2, "question": "What is the formula to calculate velocity?", "answers": ["A) v = d / t", "B) v = m * a", "C) v = f * t", "D) v = p / t"], "correctAnswer": "A) v = d / t" }, { "questionId": 3, "question": "Which of the following is an example of projectile motion?", "answers": ["A) A car moving on a straight road", "B) A ball thrown into the air", "C) A person walking in a park", "D) A boat sailing in a river"], "correctAnswer": "B) A ball thrown into the air" }, { "questionId": 4, "question": "What is the law of conservation of energy?", "answers": ["A) Energy cannot be created or destroyed, only transferred or transformed", "B) Energy always increases in a closed system", "C) Energy can be created or destroyed", "D) Energy is only conserved in mechanical systems"], "correctAnswer": "A) Energy cannot be created or destroyed, only transferred or transformed" }, { "questionId": 5, "question": "What is the speed of light in a vacuum?", "answers": ["A) 299,792,458 m/s", "B) 3.00 x 10^8 m/s", "C) 186,282 miles per second", "D) All of the above"], "correctAnswer": "D) All of the above" }] } }
 const data = ref('')
-const message = ref(`You need to create a quiz that contains 5 questions with its 4 possible answers and only one correct answer based on the user message which will be a topic in order to create the quiz.
+const message = ref(`Create a JSON File that represents a quiz, it must contain 5 questions with its 4 possible answers and only one correct answer.
+The quiz will be generated based on: ${route.params.slug}.
 You have to return a JSON, the JSON follows the following interface:
 ---
-export interface Quiz {
-  id: string;
-  topic: string;
-}
-
 export interface Question {
-  questionId: string;
   question: string;
   answers: string[];
   correctAnswer: string;
 }
 ---
-quiz topic: ${route.params.slug},
-
 ONLY RETURN THE JSON, NO ADDED TEXT OR EXPLANATION.
 `)
 onMounted(() => {

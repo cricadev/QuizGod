@@ -34,21 +34,49 @@ useHead({
 const transformLowerDash = (str) => {
   return str.replace(/\s+/g, '-').toLowerCase()
 }
-const quizStore = useQuizStore();
 const { height, width } = useWindowSize();
-const { quizes } = storeToRefs(quizStore);
-const { getQuizes, getAnswers } = quizStore;
-getQuizes()
-getAnswers()
-
-
-// const { data, error, pending } = await useLazyFetch('/api/quizes')
-
-// if (data.value) {
-//   quiz.value = data.value[0]
-// }
-
-
+const quizes = [
+  {
+    "id": "1",
+    "title": "Chemistry Quiz"
+  },
+  {
+    "id": "2",
+    "title": "Physics Quiz"
+  },
+  {
+    "id": "3",
+    "title": "Biology Quiz"
+  },
+  {
+    "id": "4",
+    "title": "Earth Science Quiz"
+  },
+  {
+    "id": "5",
+    "title": "Space Quiz"
+  },
+  {
+    "id": "6",
+    "title": "Math Quiz"
+  },
+  {
+    "id": "7",
+    "title": "Computer Science Quiz"
+  },
+  {
+    "id": "8",
+    "title": "History Quiz"
+  },
+  {
+    "id": "9",
+    "title": "Geography Quiz"
+  },
+  {
+    "id": "10",
+    "title": "Literature Quiz"
+  }
+]
 </script>
 <style scoped>
 .header {

@@ -1,21 +1,14 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
-import type { Answer, Quiz } from "~/types";
+import type { Question } from "~/types";
 export const useQuizStore = defineStore("QuizStore", {
   state: () => ({
-    quizes: [] as Quiz[],
-    answers: [] as Answer[],
+    questions: [] as Question[],
   }),
   actions: {
     async getQuizes() {
       const response = await fetch("/quizes.json");
       const data = await response.json();
       this.quizes = data.quizes;
-    },
-
-    async getAnswers() {
-      const response = await fetch("/quizes.json");
-      const data = await response.json();
-      this.answers = data.answers;
     },
   },
   getters: {},

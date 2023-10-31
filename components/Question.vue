@@ -1,5 +1,5 @@
 <template>
-  <div class="grid place-items-center h-screen" v-if="questions">
+  <div class="grid place-items-center h-screen">
 
     <form v-if="!isResult" class="flex flex-col items-start justify-center gap-4 max-w-2xl"
       @submit.prevent="handleQuestionSubmit">
@@ -79,10 +79,10 @@
     </div>
   </div>
 </template>
-<script setup lang="ts">
+<script async setup lang="ts">
 import 'animate.css';
 import { ref, reactive, watch, computed } from "vue"
-import type { Question, Quiz } from "~/types/index.ts"
+import type { Question } from "~/types/index.ts"
 /* 
 Display a question with four answer options.
 Allow users to select one answer option.
@@ -94,8 +94,14 @@ Display the final score after the last question.
 */
 
 const props = defineProps<{
-  questions: Question[]
+  questions: Question[] | null
 }>()
+
+const getQuestions = () => {
+  return props.questions
+}
+
+
 const radioButtons = ref(null)
 const countCorrectAnswers = ref(0)
 const isCorrectAnswer = ref(false);
