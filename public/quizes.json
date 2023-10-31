@@ -40,52 +40,5 @@
       "id": "10",
       "title": "Literature Quiz"
     }
-  ],
-  "answers": [
-    {
-      "quizId": "1",
-      "question": "What is the atomic number of oxygen?",
-      "optionA": "7",
-      "optionB": "8",
-      "optionC": "9",
-      "optionD": "10",
-      "correctAnswer": "B"
-    },
-    {
-      "quizId": "2",
-      "question": "Which scientist formulated the theory of general relativity?",
-      "optionA": "Isaac Newton",
-      "optionB": "Albert Einstein",
-      "optionC": "Galileo Galilei",
-      "optionD": "Niels Bohr",
-      "correctAnswer": "B"
-    },
-    {
-      "quizId": "3",
-      "question": "What is the powerhouse of the cell?",
-      "optionA": "Nucleus",
-      "optionB": "Ribosomes",
-      "optionC": "Mitochondria",
-      "optionD": "Chloroplast",
-      "correctAnswer": "C"
-    },
-    {
-      "quizId": "4",
-      "question": "What causes earthquakes?",
-      "optionA": "Volcanic eruptions",
-      "optionB": "Floods",
-      "optionC": "Hurricanes",
-      "optionD": "Plate tectonics",
-      "correctAnswer": "D"
-    },
-    {
-      "quizId": "5",
-      "question": "What is the largest planet in the solar system?",
-      "optionA": "Mars",
-      "optionB": "Saturn",
-      "optionC": "Jupiter",
-      "optionD": "Neptune",
-      "correctAnswer": "C"
-    }
   ]
 }

@@ -1,14 +1,11 @@
 export interface Quiz {
   id: string;
-  title: string;
+  topic: string;
 }
 
-export interface Answer {
-  quizId: string;
+export interface Question {
+  questionId: string;
   question: string;
-  optionA: string;
-  optionB: string;
-  optionC: string;
-  optionD: string;
+  answers: string[];
   correctAnswer: string;
 }
