@@ -1,5 +1,5 @@
 <template>
-  <div class="grid place-items-center h-screen">
+  <div class="grid place-items-center h-screen" v-if="questions">
 
     <form v-if="!isResult" class="flex flex-col items-start justify-center gap-4 max-w-2xl"
       @submit.prevent="handleQuestionSubmit">
@@ -35,7 +35,7 @@
       </Transition>
       <div class="text-primary font-semibold flex justify-between w-full ">
         <span>
-          {{ questionIndex + 1 }} / {{ props.questions.length }}
+          {{ questionIndex + 1 }} / {{ questions.length }}
         </span>
         <span class="flex items-center gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor"
