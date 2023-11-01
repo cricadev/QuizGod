@@ -34,10 +34,12 @@
   </div>
 </template>
 <script setup>
-const { chatCompletion } = useChatgpt()
 const isData = ref(false)
 const loading = ref(true)
 const route = useRoute();
+const { quizzes } = storeToRefs(useQuizStore());
+const { fetchQuizBySlug } = useQuizStore();
+const quiz = computed(() => quizzes[route.params.slug]);
 
 const data = ref('')
 const message = ref(`Create a JSON File that represents a quiz, it must contain 5 questions with its 4 possible answers and only one correct answer.
@@ -52,25 +54,43 @@ export interface Question {
 ---
 ONLY RETURN THE JSON, NO ADDED TEXT OR EXPLANATION.
 `)
-onMounted(() => {
+onMounted(async () => {
+  await fetchQuizBySlug();
+
 
   async function sendMessage() {
     const currentSlug = route.params.slug; // Assuming you are in a Vue component
+    const currentTime = new Date().getTime();
 
     try {
       // Retrieve existing data from local storage
       const localStorageData = localStorage.getItem('questionsData');
       let dataObj = localStorageData ? JSON.parse(localStorageData) : {};
 
-      // Check if data for the current slug already exists
+      // Check if data for the current slug already exists and if it's still valid
       if (dataObj[currentSlug]) {
-        data.value = dataObj[currentSlug];
-      } else {
+        const elapsedHours = (currentTime - dataObj[currentSlug].timestamp) / (1000 * 60 * 60); // Convert milliseconds to hours
+
+        if (elapsedHours < 24) {
+          data.value = dataObj[currentSlug].data;
+        } else {
+          // Remove stale data
+          delete dataObj[currentSlug];
+          localStorage.setItem('questionsData', JSON.stringify(dataObj));
+        }
+      }
+
+      // If data was not found or was stale, fetch from API
+      if (!data.value) {
         const rawResponse = await chatCompletion(message.value);
         const parsedResponse = JSON.parse(rawResponse);
 
         if (parsedResponse && parsedResponse.questions) {
-          dataObj[currentSlug] = parsedResponse.questions;
+          // Store the questions data along with a timestamp
+          dataObj[currentSlug] = {
+            timestamp: currentTime,
+            data: parsedResponse.questions
+          };
 
           // Save updated data object to local storage
           localStorage.setItem('questionsData', JSON.stringify(dataObj));

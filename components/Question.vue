@@ -94,11 +94,8 @@ const props = defineProps<{
   questions: Question[] | null
 }>()
 
-const getQuestions = () => {
-  return props.questions
-}
-
-
+const quizStore = useQuizStore();
+const { incrementCorrectAnswers } = quizStore;
 const radioButtons = ref(null)
 const countCorrectAnswers = ref(0)
 const isCorrectAnswer = ref(false);
@@ -156,6 +153,7 @@ const handleQuestionSubmit = (e) => {
   if (isSubmit.value) {
     if (answerValue.value === question.value.correctAnswer) {
       isCorrectAnswer.value = true;
+      incrementCorrectAnswers();
       isWrongAnswer.value = false;
       countCorrectAnswers.value++;
     } else {

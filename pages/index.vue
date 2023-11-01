@@ -13,9 +13,11 @@
       <div class="carousel">
         <div v-for="car in 2" :key="car" class="carousel--track" :class="'carousel--track--' + car" ref="carousel">
           <NuxtLink class="carousel--item" v-for="q in quizes" :key="q.id" :to="'/quiz/' + transformLowerDash(q.title)">
-            <h1>
-              {{ q.title }}
-            </h1>
+            <div class="">
+              <h1>
+                {{ q.title }}
+              </h1>
+            </div>
           </NuxtLink>
         </div>
       </div>

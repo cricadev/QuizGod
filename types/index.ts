@@ -3,3 +3,8 @@ export interface Question {
   answers: string[];
   correctAnswer: string;
 }
+export interface Quiz {
+  id: string;
+  correctAnswers: number;
+  questions: Question[];
+}
