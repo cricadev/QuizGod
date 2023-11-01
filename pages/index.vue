@@ -1,11 +1,13 @@
 <template>
   <div class="container-grid">
-    <img src="/logo-color.png" class="fixed top-4 left-1/2 translate-x-[-50%]" alt="">
+    <img src="/logo-color.png" class="fixed top-4 left-1/2 translate-x-[-50%]" alt="" v-if="colorMode.value == 'light'">
+    <img src="/logo-white.png" class="fixed top-4 left-1/2 translate-x-[-50%]" alt="" v-else>
 
     <main>
-      <div class="header">
-        <h1 class="font-black text-primary text-7xl">Choose Your Quiz Adventure</h1>
-        <span class="font-normal text-primary">Explore, Learn, and Have Fun with Our Diverse Quiz Selection!</span>
+      <div class="header text-primary dark:text-darkPrimary">
+        <h1 class="font-black text-7xl">Choose Your Quiz Adventure</h1>
+        <span class="font-normal ">Explore, Learn, and Have Fun with Our Diverse Quiz
+          Selection!</span>
         <ToggleTheme></ToggleTheme>
       </div>
       <div class="carousel">
@@ -21,6 +23,7 @@
   </div>
 </template>
 <script setup lang="ts">
+const colorMode = useColorMode()
 useHead({
   title: 'QuizGod',
   meta: [
@@ -140,7 +143,7 @@ main {
 }
 
 .carousel--item {
-  @apply text-center flex flex-col items-center justify-center bg-primary rounded-xl shadow-xl h-full m-4 text-bgPrimary max-w-md w-full;
+  @apply text-center flex flex-col items-center justify-center bg-primary rounded-xl shadow-xl h-full m-4 text-bgPrimary max-w-md w-full dark:bg-darkPrimary dark:text-darkBgPrimary font-bold;
 
 }
 </style>

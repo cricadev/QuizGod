@@ -1,7 +1,7 @@
 <template>
-  <div class="grid place-items-center h-screen" v-if="questions">
+  <div class="grid h-screen place-items-center" v-if="questions">
 
-    <form v-if="!isResult" class="flex flex-col items-start justify-center gap-4 max-w-2xl"
+    <form v-if="!isResult" class="flex flex-col items-start justify-center max-w-2xl gap-4"
       @submit.prevent="handleQuestionSubmit">
       <!-- ALERT -->
       <Transition>
@@ -33,7 +33,7 @@
           </div>
         </div>
       </Transition>
-      <div class="text-primary font-semibold flex justify-between w-full ">
+      <div class="flex justify-between w-full font-semibold text-primary dark:text-darkPrimary">
         <span>
           {{ questionIndex + 1 }} / {{ questions.length }}
         </span>
@@ -46,14 +46,15 @@
           {{ formatTime(elapsed) }}
         </span>
       </div>
-      <h2 class="text-5xl font-black leading-tight text-start text-primary">
+      <h2 class="text-5xl font-black leading-tight text-start text-primary dark:text-darkPrimary">
         {{ question.question }}</h2>
-      <div class="flex flex-col  mx-auto mt-4 w-full gap-2">
+      <div class="flex flex-col w-full gap-2 mx-auto mt-4">
         <label v-for="answer in question.answers" class="flex items-center w-full">
-          <input type="radio" ref="radioButtons" class="w-5 h-5 text-gray-600 form-radio hidden" name="answer"
+          <input type="radio" ref="radioButtons" class="hidden w-5 h-5 text-gray-600 form-radio" name="answer"
             :value="answer" required @click="answerValue = $event.target.value">
-          <span class="px-2 text-primary  border-primary border-2 py-2 w-full rounded-md hover:bg-hover transition-all">{{
-            answer }}</span>
+          <span
+            class="w-full px-2 py-2 transition-all border-2 rounded-md text-primary dark:text-darkPrimary border-primary dark:border-darkPrimary hover:bg-hover">{{
+              answer }}</span>
         </label>
       </div>
       <button :disabled="answerValue.length < 1" type="submit" v-if="!isSubmit" class="button-primary">
@@ -62,17 +63,13 @@
         Next</button>
     </form>
     <div
-      class="text-center text-white animate__animated animate__zoomIn animate__faster bg-primary h-screen w-screen  flex justify-center flex-col gap-4"
-      :class="[
-        {
-          'bg-[#F30000]': countCorrectAnswers <= 3,
-        }
-      ]" v-else>
+      class="flex flex-col justify-center w-screen h-screen gap-4 text-center text-white animate__animated animate__zoomIn animate__faster bg-primary"
+      :class="[{ 'bg-[#F30000]': countCorrectAnswers <= 3, }]" v-else>
       <span class="text-base font-semibold">
         {{ countCorrectAnswers }} / {{ questions.length }} answers correct
       </span>
 
-      <span class="font-black text-5xl animate-pulse">
+      <span class="text-5xl font-black animate-pulse">
         {{ formatTime(elapsedFinal) }}s, {{ responseToResult }}
       </span>
 

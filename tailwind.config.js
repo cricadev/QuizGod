@@ -5,7 +5,8 @@ module.exports = {
         primary: "#0036F3",
         hover: "#BBCAFF",
         bgPrimary: "#EFF1F6",
-        darkBgPrimary: "#1F1F1F",
+        darkBgPrimary: "#0B0e17",
+        darkPrimary: "#C8D4ff",
       },
       fontFamily: {
         inter: ["Inter", "sans-serif"],
