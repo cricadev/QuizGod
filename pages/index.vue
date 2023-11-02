@@ -26,6 +26,7 @@
 </template>
 <script setup lang="ts">
 const colorMode = useColorMode()
+const { quizzes } = storeToRefs(useQuizStore());
 useHead({
   title: 'QuizGod',
   meta: [

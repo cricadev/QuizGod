@@ -1,60 +1,73 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
 import type { Quiz } from "~/types/index"
-const route = useRoute();
-const { chatCompletion } = useChatgpt()
-const message = ref(`Create a JSON File that represents a quiz, it must contain 5 questions with its 4 possible answers and only one correct answer.
-The quiz will be generated based on: ${route.params.slug}.
-You have to return a JSON, the JSON follows the following interface:
----
-export interface Question {
-  question: string;
-  answers: string[];
-  correctAnswer: string;
-}
----
-ONLY RETURN THE JSON, NO ADDED TEXT OR EXPLANATION.
-`)
-export const useQuizStore = defineStore("QuizStore", {
-  state: () => ({
-    quizzes: [] as Quiz[],
-  }),
-  actions: {
-    async fetchQuizBySlug() {
-      const currentSlug = route.params.slug;
+export const useQuizStore = defineStore('quizStore', () => {
+  const { chatCompletion } = useChatgpt()
+  const quizzes = ref([] as Quiz[]);
+  const storedQuizzes = ref([] as Quiz[])
 
-      // Retrieve existing data from the store
-      let quiz = this.quizzes[currentSlug];
+  onMounted(() => {
+    storedQuizzes.value = JSON.parse(localStorage.getItem('quizzes') || '[]');
 
-      // If data was not found in the store, fetch from API
-      if (!quiz) {
-        try {
-          const rawResponse = await chatCompletion(message.value);
-          const parsedResponse = JSON.parse(rawResponse);
+    if (storedQuizzes.value.length > 0) {
+      quizzes.value = storedQuizzes.value
+    }
+  })
 
-          if (parsedResponse && parsedResponse.questions) {
-            this.quizzes[currentSlug] = {
-              id: currentSlug,
-              correctAnswers: 0,
-              questions: parsedResponse.questions,
-            };
 
-            // Save the quiz data to localStorage
-            localStorage.setItem('quizzes', JSON.stringify(this.quizzes));
-          } else {
-            console.error('Unexpected response structure');
-          }
-        } catch (error) {
-          console.error('An error occurred:', error);
-        }
+
+  const fetchQuizBySlug = async (slug: string, message: string) => {
+    // Retrieve quizzes from localStorage and parse it back to an array
+
+    // Update the quizzes ref
+    quizzes.value = storedQuizzes.value;
+
+    let quiz = quizzes.value.find(q => q.id === slug);
+
+    // If the quiz already exists, return it
+    if (quiz) {
+      return quiz;
+    }
+
+    try {
+      const rawResponse = await chatCompletion(message.value);
+      const parsedResponse = JSON.parse(rawResponse);
+
+      if (parsedResponse && parsedResponse.questions) {
+        const newQuiz = {
+          id: slug,
+          correctAnswers: 0,
+          questions: parsedResponse.questions,
+          timestamp: new Date().getTime(), // Store the timestamp of when the quiz was created
+        };
+
+        // Push the new quiz to the array
+        storedQuizzes.value.push(newQuiz);
+
+        // Update the quizzes ref
+        quizzes.value = storedQuizzes.value;
+
+        // Store the updated quizzes array back to localStorage
+        localStorage.setItem('quizzes', JSON.stringify(storedQuizzes.value));
+
+        // Return the new quiz
+        return newQuiz;
+      } else {
+        console.error('Unexpected response structure');
       }
-    },
-  },
-  getters: {
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
+  };
 
-  },
+  const getCurrentQuiz = (slug: string) => {
+    return quizzes.value.find(q => q.id === slug);
+  };
+  return {
+    quizzes,
+    fetchQuizBySlug,
+    getCurrentQuiz
+  };
 });
 if (import.meta.hot) {
-  import.meta.hot.accept(
-    acceptHMRUpdate(useQuizStore, import.meta.hot)
-  );
+  import.meta.hot.accept(acceptHMRUpdate(useQuizStore, import.meta.hot))
 }

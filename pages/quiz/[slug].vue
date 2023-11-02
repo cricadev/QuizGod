@@ -5,7 +5,7 @@
       <div v-if="!loading">
 
 
-        <Question :questions="data"></Question>
+        <Question :questions="data.questions"></Question>
 
 
       </div>
@@ -34,14 +34,16 @@
   </div>
 </template>
 <script setup>
-const isData = ref(false)
+import { get } from '@vueuse/core';
+
 const loading = ref(true)
 const route = useRoute();
-const { quizzes } = storeToRefs(useQuizStore());
 const { fetchQuizBySlug } = useQuizStore();
-const quiz = computed(() => quizzes[route.params.slug]);
+const data = ref(null);
 
-const data = ref('')
+
+
+
 const message = ref(`Create a JSON File that represents a quiz, it must contain 5 questions with its 4 possible answers and only one correct answer.
 The quiz will be generated based on: ${route.params.slug}.
 You have to return a JSON, the JSON follows the following interface:
@@ -55,9 +57,10 @@ export interface Question {
 ONLY RETURN THE JSON, NO ADDED TEXT OR EXPLANATION.
 `)
 onMounted(async () => {
-  await fetchQuizBySlug();
+  data.value = await fetchQuizBySlug(route.params.slug, message);
+  loading.value = false;
 
-
+  /*
   async function sendMessage() {
     const currentSlug = route.params.slug; // Assuming you are in a Vue component
     const currentTime = new Date().getTime();
@@ -107,6 +110,7 @@ onMounted(async () => {
   }
 
   sendMessage();
+  */
 })
 
 </script>

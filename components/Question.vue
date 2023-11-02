@@ -95,7 +95,7 @@ const props = defineProps<{
 }>()
 
 const quizStore = useQuizStore();
-const { incrementCorrectAnswers } = quizStore;
+const { quizzes } = storeToRefs(quizStore);
 const radioButtons = ref(null)
 const countCorrectAnswers = ref(0)
 const isCorrectAnswer = ref(false);
