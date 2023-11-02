@@ -96,7 +96,7 @@ const props = defineProps<{
 const route = useRoute();
 const quizStore = useQuizStore();
 const { quizzes } = storeToRefs(quizStore);
-const { incrementCorrectAnswers } = quizStore;
+const { updateCorrectAnswers, updateQuizTime } = quizStore;
 const radioButtons = ref(null)
 const countCorrectAnswers = ref(0)
 const isCorrectAnswer = ref(false);
@@ -118,6 +118,7 @@ watch(isResult, (newValue) => {
   if (newValue) {
     clearInterval(intervalId.value); // Stop the timer when all questions are answered
     elapsedFinal.value = elapsed.value;
+    updateQuizTime(route.params.slug, elapsedFinal.value);
   }
 });
 
@@ -165,7 +166,7 @@ const handleQuestionSubmit = (e) => {
 const handleNextQuestionButton = (e) => {
   if (props.questions.length <= questionIndex.value + 1) {
     isResult.value = true;
-    incrementCorrectAnswers(route.params.slug, countCorrectAnswers.value);
+    updateCorrectAnswers(route.params.slug, countCorrectAnswers.value);
   } else {
     questionIndex.value++;
   }

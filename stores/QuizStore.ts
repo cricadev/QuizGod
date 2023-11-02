@@ -32,6 +32,7 @@ export const useQuizStore = defineStore('quizStore', () => {
         const newQuiz = {
           id: slug,
           correctAnswers: 0,
+          time: 0,
           questions: parsedResponse.questions,
           timestamp: new Date().getTime(), // Store the timestamp of when the quiz was created
         };
@@ -56,7 +57,7 @@ export const useQuizStore = defineStore('quizStore', () => {
   };
 
 
-  const incrementCorrectAnswers = (slug: string, value: number) => {
+  const updateCorrectAnswers = (slug: string, value: number) => {
     const quizIndex = quizzes.value.findIndex(q => q.id === slug);
 
     if (quizIndex !== -1) {
@@ -70,10 +71,22 @@ export const useQuizStore = defineStore('quizStore', () => {
     }
   }
 
+  const updateQuizTime = (slug: string, time: number) => {
+    const quizIndex = quizzes.value.findIndex(q => q.id === slug);
+
+    if (quizIndex !== -1) {
+      quizzes.value[quizIndex].time = time;
+
+      // Update the stored quizzes in localStorage
+      localStorage.setItem('quizzes', JSON.stringify(quizzes.value));
+    }
+  }
+
   return {
     quizzes,
     fetchQuizBySlug,
-    incrementCorrectAnswers
+    updateCorrectAnswers,
+    updateQuizTime
   };
 });
 if (import.meta.hot) {
