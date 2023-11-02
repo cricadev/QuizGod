@@ -93,9 +93,10 @@ Display the final score after the last question.
 const props = defineProps<{
   questions: Question[] | null
 }>()
-
+const route = useRoute();
 const quizStore = useQuizStore();
 const { quizzes } = storeToRefs(quizStore);
+const { incrementCorrectAnswers } = quizStore;
 const radioButtons = ref(null)
 const countCorrectAnswers = ref(0)
 const isCorrectAnswer = ref(false);
@@ -153,7 +154,6 @@ const handleQuestionSubmit = (e) => {
   if (isSubmit.value) {
     if (answerValue.value === question.value.correctAnswer) {
       isCorrectAnswer.value = true;
-      incrementCorrectAnswers();
       isWrongAnswer.value = false;
       countCorrectAnswers.value++;
     } else {
@@ -165,6 +165,7 @@ const handleQuestionSubmit = (e) => {
 const handleNextQuestionButton = (e) => {
   if (props.questions.length <= questionIndex.value + 1) {
     isResult.value = true;
+    incrementCorrectAnswers(route.params.slug, countCorrectAnswers.value);
   } else {
     questionIndex.value++;
   }

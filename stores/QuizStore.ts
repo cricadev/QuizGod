@@ -16,10 +16,6 @@ export const useQuizStore = defineStore('quizStore', () => {
 
 
   const fetchQuizBySlug = async (slug: string, message: string) => {
-    // Retrieve quizzes from localStorage and parse it back to an array
-
-    // Update the quizzes ref
-    quizzes.value = storedQuizzes.value;
 
     let quiz = quizzes.value.find(q => q.id === slug);
 
@@ -59,13 +55,25 @@ export const useQuizStore = defineStore('quizStore', () => {
     }
   };
 
-  const getCurrentQuiz = (slug: string) => {
-    return quizzes.value.find(q => q.id === slug);
-  };
+
+  const incrementCorrectAnswers = (slug: string, value: number) => {
+    const quizIndex = quizzes.value.findIndex(q => q.id === slug);
+
+    if (quizIndex !== -1) {
+      if (value >= quizzes.value[quizIndex].correctAnswers) {
+        quizzes.value[quizIndex].correctAnswers = value;
+
+      }
+
+      // Update the stored quizzes in localStorage
+      localStorage.setItem('quizzes', JSON.stringify(quizzes.value));
+    }
+  }
+
   return {
     quizzes,
     fetchQuizBySlug,
-    getCurrentQuiz
+    incrementCorrectAnswers
   };
 });
 if (import.meta.hot) {
