@@ -16,14 +16,44 @@ body {
   @apply bg-darkBgPrimary;
 }
 .button-primary {
-  @apply bg-primary text-white p-3 hover:shadow-md hover:shadow-primary/25 rounded-md dark:bg-darkPrimary dark:hover:shadow-darkPrimary/25;
+  @apply bg-primary text-white p-3 hover:shadow-md hover:shadow-primary/25 rounded-md;
 }
 .button-primary:focus {
-  @apply outline-hover dark:outline-hover outline-2;
+  @apply outline-none border-primary-100 border-2;
 }
 .button-primary:active {
   @apply border-bgPrimary outline-none border-2;
 }
 .button-primary:disabled {
-  @apply bg-gray-300 text-white;
+  @apply bg-primary-100 text-white border-2 border-white;
+}
+.button-secondary {
+  @apply bg-transparent text-primary p-3 hover:border-b-2 hover:border-primary rounded-md;
+}
+.button-secondary:focus {
+  @apply border-primary border-2 outline-none;
+}
+
+.button-secondary:active {
+  @apply border-primary outline-none border-2;
+}
+
+.button-secondary:disabled {
+  @apply text-white bg-transparent border-2 outline-none border-primary-100;
+}
+
+.button-tertiary {
+  @apply bg-white text-primary p-3 hover:shadow-md hover:shadow-primary rounded-md;
+}
+
+.button-tertiary:focus {
+  @apply outline-none border-primary-100 border-2;
+}
+
+.button-tertiary:active {
+  @apply border-primary outline-none border-2;
+}
+
+.button-tertiary:disabled {
+  @apply bg-primary-100/70 border-2 border-white text-white;
 }

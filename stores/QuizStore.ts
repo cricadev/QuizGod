@@ -2,6 +2,8 @@ import { defineStore, acceptHMRUpdate } from "pinia";
 import type { Quiz } from "~/types/index"
 export const useQuizStore = defineStore('quizStore', () => {
   const { chatCompletion } = useChatgpt()
+  const supabase = useSupabaseClient()
+
   const quizzes = ref([] as Quiz[]);
   const storedQuizzes = ref([] as Quiz[])
 
@@ -57,27 +59,41 @@ export const useQuizStore = defineStore('quizStore', () => {
   };
 
 
-  const updateCorrectAnswers = (slug: string, value: number) => {
-    const quizIndex = quizzes.value.findIndex(q => q.id === slug);
+  async function submitQuizResults(slug, results, timeStamp) {
+    try {
+      const { data, error } = await supabase
+        .from('leaderboard')
+        .insert([
+          { name: results.name, time_taken: results.time, submitted_at: timeStamp, quiz_slug: slug }
+        ])
+        .select();
 
-    if (quizIndex !== -1) {
-      if (value >= quizzes.value[quizIndex].correctAnswers) {
-        quizzes.value[quizIndex].correctAnswers = value;
-
+      if (error) {
+        throw error;
       }
+      return data;
+    } catch (error) {
 
-      // Update the stored quizzes in localStorage
-      localStorage.setItem('quizzes', JSON.stringify(quizzes.value));
+      console.error('Error submitting quiz results:', error);
     }
+
   }
 
-  const updateQuizTime = (slug: string, time: number) => {
+  const updateQuizResults = async (slug: string, results: object) => {
     const quizIndex = quizzes.value.findIndex(q => q.id === slug);
 
-    if (quizIndex !== -1) {
-      quizzes.value[quizIndex].time = time;
+    if (quizIndex > -1) {
+      const quiz = quizzes.value[quizIndex];
+      quiz.correctAnswers = results.correctAnswers;
 
-      // Update the stored quizzes in localStorage
+      quiz.time = results.time;
+      quiz.timestamp = new Date().getTime();
+
+      const result = await submitQuizResults(slug, results, quiz.timestamp);
+      console.log(result);
+
+      quizzes.value[quizIndex] = quiz;
+
       localStorage.setItem('quizzes', JSON.stringify(quizzes.value));
     }
   }
@@ -85,8 +101,7 @@ export const useQuizStore = defineStore('quizStore', () => {
   return {
     quizzes,
     fetchQuizBySlug,
-    updateCorrectAnswers,
-    updateQuizTime
+    updateQuizResults
   };
 });
 if (import.meta.hot) {

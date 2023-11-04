@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
     "@pinia/nuxt",
     'nuxt-chatgpt',
+    '@nuxtjs/supabase'
   ],
   colorMode: {
     preference: 'system', // default value of $colorMode.preference
@@ -23,5 +24,16 @@ export default defineNuxtConfig({
   },
   chatgpt: {
     apiKey: process.env.CHATGPT_API_KEY,
+  },
+  runtimeConfig: {
+    supabaseUrl: process.env.SUPABASE_URL,
+    supabaseKey: process.env.SUPABASE_KEY
+  },
+  supabase: {
+    redirectOptions: {
+      login: '/login',
+      callback: '/confirm',
+      exclude: ['/', '/quiz/*']
+    }
   }
 })
