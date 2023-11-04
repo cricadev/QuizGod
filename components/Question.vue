@@ -80,14 +80,34 @@
     </TransitionGroup>
 
     <div v-if="isResult && resultSent"
-      class="flex flex-col justify-center w-screen h-screen gap-4 text-center text-white animate__animated animate__zoomIn animate__faster bg-primary"
+      class="flex items-center justify-center w-screen h-screen gap-32 text-center text-white animate__animated animate__zoomIn animate__faster bg-primary"
       :class="[{ 'bg-[#F30000]': countCorrectAnswers <= 3, }]">
-      <span class="text-base font-semibold">
-        {{ countCorrectAnswers }} / {{ questions.length }} answers correct
-      </span>
-      <span class="text-5xl font-black animate-pulse">
-        {{ formatTime(elapsedFinal) }}s, {{ responseToResult }}
-      </span>
+      <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-8">
+          <div class="flex flex-col gap-2">
+            <span class="text-base font-semibold">
+              {{ countCorrectAnswers }} / {{ questions.length }} answers correct
+            </span>
+            <span class="text-5xl font-black animate-pulse">
+              {{ formatTime(elapsedFinal) }}s
+            </span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="button-secondary" style="color:white;" @click="reloadPage"> Try
+              again </button>
+            <nuxt-link to="/" class="flex button-tertiary"> <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+              </svg>
+              Choose a New Quiz </nuxt-link>
+          </div>
+        </div>
+      </div>
+      <div class="leaderboard">
+        <pre>
+          {{ readTable }}
+        </pre>
+      </div>
     </div>
   </div>
 </template>
@@ -104,6 +124,7 @@ Provide a "Next" button to load the next question.
 Keep track of the user's score throughout the quiz.
 Display the final score after the last question.
 */
+const supabase = useSupabaseClient();
 const resultSent = ref(false)
 const isResult = ref(false)
 const props = defineProps<{
@@ -112,7 +133,7 @@ const props = defineProps<{
 const route = useRoute();
 const quizStore = useQuizStore();
 const { quizzes, name } = storeToRefs(quizStore);
-const { updateQuizResults } = quizStore;
+const { updateQuizResults, readLeaderboard } = quizStore;
 const radioButtons = ref(null)
 const countCorrectAnswers = ref(0)
 const isCorrectAnswer = ref(false);
@@ -128,7 +149,9 @@ const elapsed = ref(0);
 const intervalId = ref(setInterval(() => {
   elapsed.value = Date.now() - startTime.value;
 }, 1000));
-
+const reloadPage = () => {
+  window.location.reload();
+}
 const findQuiz = (slug) => {
   return quizzes.value.find((quiz) => quiz.id == slug)
 }
@@ -139,6 +162,10 @@ watch(isResult, (newValue) => {
     elapsedFinal.value = elapsed.value;
   }
 });
+
+const readTable = await readLeaderboard(route.params.slug);
+
+
 
 
 const submitResults = () => {

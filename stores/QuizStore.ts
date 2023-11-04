@@ -100,11 +100,30 @@ export const useQuizStore = defineStore('quizStore', () => {
     }
   }
 
+  const readLeaderboard = async (slug: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('leaderboard')
+        .select('*')
+        .eq('quiz_slug', slug)
+        .order('time_taken', { ascending: true });
+
+      if (error) {
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error getting leaderboard:', error);
+    }
+  }
+
   return {
     quizzes,
     fetchQuizBySlug,
     updateQuizResults,
-    name
+    name,
+    readLeaderboard
   };
 });
 if (import.meta.hot) {
