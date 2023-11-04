@@ -3,7 +3,7 @@ import type { Quiz } from "~/types/index"
 export const useQuizStore = defineStore('quizStore', () => {
   const { chatCompletion } = useChatgpt()
   const supabase = useSupabaseClient()
-
+  const name = ref('');
   const quizzes = ref([] as Quiz[]);
   const storedQuizzes = ref([] as Quiz[])
 
@@ -33,6 +33,7 @@ export const useQuizStore = defineStore('quizStore', () => {
       if (parsedResponse && parsedResponse.questions) {
         const newQuiz = {
           id: slug,
+          name: name.value,
           correctAnswers: 0,
           time: 0,
           questions: parsedResponse.questions,
@@ -84,6 +85,7 @@ export const useQuizStore = defineStore('quizStore', () => {
 
     if (quizIndex > -1) {
       const quiz = quizzes.value[quizIndex];
+      quiz.name = results.name;
       quiz.correctAnswers = results.correctAnswers;
 
       quiz.time = results.time;
@@ -101,7 +103,8 @@ export const useQuizStore = defineStore('quizStore', () => {
   return {
     quizzes,
     fetchQuizBySlug,
-    updateQuizResults
+    updateQuizResults,
+    name
   };
 });
 if (import.meta.hot) {

@@ -5,6 +5,7 @@ export interface Question {
 }
 export interface Quiz {
   id: string;
+  name: string;
   correctAnswers: number;
   questions: Question[];
   time: number;

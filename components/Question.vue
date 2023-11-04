@@ -68,7 +68,7 @@
       </form>
 
       <form @submit.prevent="submitResults" class="absolute flex flex-col items-start justify-center gap-12 "
-        v-if="isResult && !resultSent">
+        v-if="isResult && !resultSent && findQuiz(route.params.slug)?.name.length < 1">
         <h3 class="text-3xl font-black text-primary dark:text-darkPrimary">Share your name with us to save the results
         </h3>
         <input type="text"
@@ -106,13 +106,12 @@ Display the final score after the last question.
 */
 const resultSent = ref(false)
 const isResult = ref(false)
-const name = ref('')
 const props = defineProps<{
   questions: Question[] | null
 }>()
 const route = useRoute();
 const quizStore = useQuizStore();
-const { quizzes } = storeToRefs(quizStore);
+const { quizzes, name } = storeToRefs(quizStore);
 const { updateQuizResults } = quizStore;
 const radioButtons = ref(null)
 const countCorrectAnswers = ref(0)
@@ -130,6 +129,9 @@ const intervalId = ref(setInterval(() => {
   elapsed.value = Date.now() - startTime.value;
 }, 1000));
 
+const findQuiz = (slug) => {
+  return quizzes.value.find((quiz) => quiz.id == slug)
+}
 
 watch(isResult, (newValue) => {
   if (newValue) {
@@ -141,7 +143,7 @@ watch(isResult, (newValue) => {
 
 const submitResults = () => {
   const results = {
-    name: name.value,
+    name: name.value !== '' ? name.value : findQuiz(route.params.slug)?.name,
     correctAnswers: countCorrectAnswers.value,
     time: elapsedFinal.value
   }
@@ -193,6 +195,12 @@ const handleQuestionSubmit = (e) => {
 const handleNextQuestionButton = (e) => {
   if (props.questions.length <= questionIndex.value + 1) {
     isResult.value = true;
+    if (findQuiz(route.params.slug)?.name.length > 1) {
+      resultSent.value = true;
+      setTimeout(() => {
+        submitResults();
+      }, 10);
+    }
   } else {
     questionIndex.value++;
   }
