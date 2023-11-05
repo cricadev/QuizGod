@@ -59,26 +59,47 @@ export const useQuizStore = defineStore('quizStore', () => {
     }
   };
 
-
   async function submitQuizResults(slug, results, timeStamp) {
     try {
-      const { data, error } = await supabase
+      // Check if a result already exists for this user and quiz
+      const { data: existingResults, error: existingResultsError } = await supabase
         .from('leaderboard')
-        .insert([
-          { name: results.name, time_taken: results.time, submitted_at: timeStamp, quiz_slug: slug }
-        ])
-        .select();
+        .select('*')
+        .eq('quiz_slug', slug)
+        .eq('name', results.name);
 
-      if (error) {
-        throw error;
+      if (existingResultsError) throw existingResultsError;
+
+      // If a result exists and the new time is less, update it
+      if (existingResults.length > 0 && results.time < existingResults[0].time_taken) {
+        const { data, error } = await supabase
+          .from('leaderboard')
+          .update({ time_taken: results.time, submitted_at: timeStamp })
+          .eq('quiz_slug', slug)
+          .eq('name', results.name);
+
+        if (error) {
+          throw error;
+        }
+        return data;
+      } else if (existingResults.length === 0) {
+        // If a result doesn't exist, create it
+        const { data, error } = await supabase
+          .from('leaderboard')
+          .insert([
+            { name: results.name, time_taken: results.time, submitted_at: timeStamp, quiz_slug: slug }
+          ]);
+
+        if (error) {
+          throw error;
+        }
+        return data;
       }
-      return data;
     } catch (error) {
-
       console.error('Error submitting quiz results:', error);
     }
-
   }
+
 
   const updateQuizResults = async (slug: string, results: object) => {
     const quizIndex = quizzes.value.findIndex(q => q.id === slug);
@@ -112,7 +133,53 @@ export const useQuizStore = defineStore('quizStore', () => {
         throw error;
       }
 
-      return data;
+      const updatedData = ref(data);
+
+      const leaderboardInserts = supabase.channel('custom-insert-channel')
+        .on(
+          'postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'leaderboard' },
+          async (payload) => {
+            console.log('Insert received!', payload);
+            const { data: newData, error: updatedError } = await supabase
+              .from('leaderboard')
+              .select('*')
+              .eq('quiz_slug', slug)
+              .order('time_taken', { ascending: true });
+
+            if (updatedError) {
+              console.error('Error getting updated leaderboard:', updatedError);
+              return;
+            }
+
+            updatedData.value = newData;
+          }
+        )
+        .subscribe();
+
+      const leaderboardUpdates = supabase.channel('custom-update-channel')
+        .on(
+          'postgres_changes',
+          { event: 'UPDATE', schema: 'public', table: 'leaderboard' },
+          async (payload) => {
+            console.log('Update received!', payload);
+            const { data: newData, error: updatedError } = await supabase
+              .from('leaderboard')
+              .select('*')
+              .eq('quiz_slug', slug)
+              .order('time_taken', { ascending: true });
+
+            if (updatedError) {
+              console.error('Error getting updated leaderboard:', updatedError);
+              return;
+            }
+
+            updatedData.value = newData;
+          }
+        )
+        .subscribe();
+
+      return { data: updatedData, leaderboardInserts, leaderboardUpdates };
     } catch (error) {
       console.error('Error getting leaderboard:', error);
     }

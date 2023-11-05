@@ -15,7 +15,9 @@
                 d="M12 9v3.75m0-10.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.249-8.25-3.286zm0 13.036h.008v.008H12v-.008z" />
             </svg>
             <div>
-              <span class="font-medium">Wrong answer!</span>
+              <span class="font-medium">Wrong answer!
+                <span class="text-xs font-black">-30s</span>
+              </span>
             </div>
           </div>
         </Transition>
@@ -80,17 +82,18 @@
     </TransitionGroup>
 
     <div v-if="isResult && resultSent"
-      class="flex items-center justify-center w-screen h-screen gap-32 text-center text-white animate__animated animate__zoomIn animate__faster bg-primary"
-      :class="[{ 'bg-[#F30000]': countCorrectAnswers <= 3, }]">
+      class="flex items-center justify-center w-screen h-screen gap-32 text-center text-white animate__animated animate__zoomIn animate__faster"
+      :class="[{ 'bg-red': countCorrectAnswers <= 3 }, {
+        'bg-primary': countCorrectAnswers > 3 && countCorrectAnswers <= 5
+      }]">
       <div class="flex flex-col gap-4">
         <div class="flex flex-col gap-8">
-          <div class="flex flex-col gap-2">
+          <div class="flex flex-col gap-2 text-start">
             <span class="text-base font-semibold">
               {{ countCorrectAnswers }} / {{ questions.length }} answers correct
             </span>
-            <span class="text-5xl font-black animate-pulse">
-              {{ formatTime(elapsedFinal) }}s
-            </span>
+            <span class="text-5xl font-black animate-pulse"
+              v-html="formatTime(elapsedFinal) + 's<br>' + responseToResult.replace(/\n/g, '<br>')"></span>
           </div>
           <div class="flex items-center gap-2">
             <button class="button-secondary" style="color:white;" @click="reloadPage"> Try
@@ -103,10 +106,25 @@
           </div>
         </div>
       </div>
-      <div class="leaderboard">
-        <pre>
-          {{ readTable }}
-        </pre>
+      <div class="border-4 rounded-lg leaderboard">
+        <table class="">
+          <thead class="">
+            <tr class="bg-white" :class="[{ 'text-red': countCorrectAnswers <= 3 }, {
+              'text-primary': countCorrectAnswers > 3 && countCorrectAnswers <= 5
+            }]">
+              <th class="py-4 pl-4 pr-24 bg-white">Player</th>
+              <th class="pr-8 bg-white">Date</th>
+              <th class="pr-16 bg-white">Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in leaderboardData" class="" :key="item.id">
+              <td class="py-4 pl-6 pr-24">{{ item.name }}</td>
+              <td class="pl-12 pr-8">{{ formatDate(item.submitted_at) }}</td>
+              <td class="pl-4 pr-16 ">{{ formatTime(item.time_taken, 3) }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -124,9 +142,18 @@ Provide a "Next" button to load the next question.
 Keep track of the user's score throughout the quiz.
 Display the final score after the last question.
 */
+const formatDate = (timestamp) => {
+  const date = new Date(timestamp);
+  const day = ("0" + date.getDate()).slice(-2);
+  const month = ("0" + (date.getMonth() + 1)).slice(-2);
+  const year = date.getFullYear();
+
+  return `${day}/${month}/${year}`;
+}
 const supabase = useSupabaseClient();
 const resultSent = ref(false)
 const isResult = ref(false)
+const leaderboardData = ref([])
 const props = defineProps<{
   questions: Question[] | null
 }>()
@@ -144,11 +171,7 @@ const questionIndex = ref(0)
 const elapsedFinal = ref(null)
 const startTime = ref(Date.now());
 
-const elapsed = ref(0);
 
-const intervalId = ref(setInterval(() => {
-  elapsed.value = Date.now() - startTime.value;
-}, 1000));
 const reloadPage = () => {
   window.location.reload();
 }
@@ -163,11 +186,10 @@ watch(isResult, (newValue) => {
   }
 });
 
-const readTable = await readLeaderboard(route.params.slug);
-
-
-
-
+onMounted(async () => {
+  const data = await readLeaderboard(route.params.slug);
+  leaderboardData.value = data?.data.value;
+})
 const submitResults = () => {
   const results = {
     name: name.value !== '' ? name.value : findQuiz(route.params.slug)?.name,
@@ -178,14 +200,23 @@ const submitResults = () => {
 
 }
 
-const formatTime = (milliseconds: number) => {
+const formatTime = (milliseconds: number, digits = 2) => {
+
   const seconds = Math.floor((milliseconds / 1000) % 60);
   const minutes = Math.floor((milliseconds / (1000 * 60)) % 60);
+  const millisecondsLeft = milliseconds % 1000;
 
   const formattedSeconds = seconds < 10 ? '0' + seconds : seconds;
   const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+  const formattedMilliseconds = millisecondsLeft < 10 ? '0' + millisecondsLeft : millisecondsLeft;
 
-  return `${formattedMinutes}:${formattedSeconds}`;
+  if (digits === 2) {
+    return `${formattedMinutes}:${formattedSeconds}`;
+  }
+
+  else if (digits === 3) {
+    return `${formattedMinutes}:${formattedSeconds}.${formattedMilliseconds}`;
+  }
 }
 
 
@@ -201,10 +232,16 @@ const responseToResult = computed(() => {
     return 'NOT BAD MY G'
   }
   else if (countCorrectAnswers.value === 0) {
-    return `you're terrible man! go study for a lil bit`
+    return `you're terrible man! \nGo study for a lil bit`
   }
 })
 
+const elapsed = ref(0);
+const penalty = ref(0);
+
+const intervalId = ref(setInterval(() => {
+  elapsed.value = Date.now() - startTime.value + penalty.value;
+}, 1000));
 
 const handleQuestionSubmit = (e) => {
   isSubmit.value = true;
@@ -216,6 +253,7 @@ const handleQuestionSubmit = (e) => {
     } else {
       isWrongAnswer.value = true;
       isCorrectAnswer.value = false;
+      penalty.value += 30000;
     }
   }
 }
