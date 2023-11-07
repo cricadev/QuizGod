@@ -9,7 +9,8 @@
 
 
       </div>
-      <div v-else>
+      <div class="flex items-center justify-center w-full h-full" v-else>
+
         <div class="loader">
           <div class="loader-inner">
             <div class="loader-line-wrap">
@@ -29,18 +30,49 @@
             </div>
           </div>
         </div>
+        <h2 class="absolute top-[40%]  text-center  text-white z-[9999] font-bold animate-pulse">
+          {{ messagesWhileLoading }}
+        </h2>
+        <Transition>
+          <div class="absolute top-[60%] flex justify-center animate-pulse z-[9999] " v-if="tookTooLong">
+            <button @click="reloadPage" class="button-primary">
+              Reload Page
+            </button>
+          </div>
+        </Transition>
       </div>
     </Transition>
   </div>
 </template>
 <script setup>
-import { get } from '@vueuse/core';
+
 
 const loading = ref(true)
 const route = useRoute();
 const { fetchQuizBySlug } = useQuizStore();
+const tookTooLong = ref(false);
 const data = ref(null);
+const reloadPage = () => {
+  window.location.reload();
+}
+const transformLowerDash = (str) => {
+  let words = str.replace(/-/g, ' ').split(' ');
+  for (let i = 0; i < 2 && i < words.length; i++) {
+    words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1);
+  }
+  return words.join(' ');
+}
 
+const messagesWhileLoading = computed(() => {
+  return `Loading quiz for ${transformLowerDash(route.params.slug)}...`
+})
+
+onMounted(() => {
+  setTimeout(() => {
+    tookTooLong.value = true;
+  }, 3000);
+
+})
 
 
 
@@ -56,6 +88,8 @@ export interface Question {
 ---
 ONLY RETURN THE JSON, NO ADDED TEXT OR EXPLANATION.
 `)
+
+
 onMounted(async () => {
   data.value = await fetchQuizBySlug(route.params.slug, message);
   loading.value = false;
@@ -136,7 +170,7 @@ onMounted(async () => {
   position: fixed;
   right: 0;
   top: 0;
-  z-index: 99999;
+  z-index: 998;
 }
 
 .loader-inner {

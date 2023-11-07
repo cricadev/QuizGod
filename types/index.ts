@@ -11,3 +11,8 @@ export interface Quiz {
   time: number;
   timestamp: number;
 }
+export interface LeaderboardEntry {
+  name: string;
+  date: number;
+  time: number;
+}

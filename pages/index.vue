@@ -5,51 +5,118 @@
 
     <main>
       <div class="header text-primary dark:text-darkPrimary">
-        <h1 class="font-black text-7xl">Choose Your Quiz Adventure</h1>
-        <span class="font-normal ">Explore, Learn, and Have Fun with Our Diverse Quiz
+        <h1 class="text-5xl font-black lg:text-7xl">Choose Your Quiz Adventure</h1>
+        <span class="mt-4 text-xs font-normal lg:text-base">Explore, Learn, and Have Fun with Our Diverse Quiz
           Selection!</span>
         <ToggleTheme></ToggleTheme>
       </div>
       <div class="carousel">
         <div v-for="car in 2" :key="car" class="carousel--track" :class="'carousel--track--' + car" ref="carousel">
           <NuxtLink class="carousel--item" v-for="q in quizes" :key="q.id" :to="'/quiz/' + transformLowerDash(q.title)">
-            <div class="flex flex-col justify-end w-full h-full gap-8 px-2 pb-4" v-if="findQuiz(q.slug)">
-              <h1>
-                {{ q.title }}
-              </h1>
-              <div class="flex justify-between w-full text-start">
-                <span class="text-sm font-normal">
-                  Last try:
-                  <span class="flex items-center gap-1 ">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            <div class="relative w-full h-full gap-8 px-2 pb-4 overflow-hidden" v-if="findQuiz(q.slug)">
+              <img :src="q.img" alt=""
+                class="absolute top-0 left-0 z-10 object-cover object-center w-full h-full opacity-20 rounded-xl">
+              <div class="relative z-20 flex flex-col justify-end w-full h-full gap-6">
+                <h1>
+                  {{ q.title }}
+                </h1>
+                <div class="flex justify-between w-full text-xs font-semibold lg:text-base text-start text-primary-50">
+                  <span class="font-medium">
+                    Last try:
+                    <span class="flex items-center gap-1 ">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                      </svg>
+                      {{ formatDate(findQuiz(q.slug)?.timestamp) }}
+                    </span> </span>
+                  <span class="flex items-center self-end gap-1">
+                    <svg xmlns=" http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
                       stroke="currentColor" class="w-6 h-6">
                       <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                        d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    {{ formatDate(findQuiz(q.slug)?.timestamp) }}
-                  </span> </span>
-                <span class="flex items-center gap-1 text-sm font-normal">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                      d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-
-                  {{ formatTime(findQuiz(q.slug)?.time) }} </span>
+                    {{ formatTime(findQuiz(q.slug)?.time) }}
+                  </span>
+                </div>
               </div>
             </div>
-            <div class="" v-else>
-              <h1>
-                {{ q.title }}
-              </h1>
+            <div class="relative w-full h-full gap-8 px-2 pb-4 overflow-hidden" v-else>
+              <img :src="q.img" alt=""
+                class="absolute top-0 left-0 z-10 object-cover object-center w-full h-full rounded-xl opacity-20">
+              <div class="relative z-20 flex flex-col justify-center w-full h-full">
+                <h1>
+                  {{ q.title }}
+                </h1>
+              </div>
             </div>
           </NuxtLink>
         </div>
       </div>
+      <div class="carousel carousel--mobile">
+        <div v-for="car in 2" :key="car" class="carousel--track--mobile" :class="'carousel--track--mobile--' + car"
+          ref="carousel">
+          <NuxtLink class="carousel--item" v-for="q in quizes" :key="q.id" :to="'/quiz/' + transformLowerDash(q.title)">
+            <div class="relative w-full h-full gap-8 px-2 pb-4 overflow-hidden" v-if="findQuiz(q.slug)">
+              <img :src="q.img" alt=""
+                class="absolute top-0 left-0 z-10 object-cover object-center w-full h-full opacity-20 rounded-xl">
+              <div class="relative z-20 flex flex-col justify-end w-full h-full gap-6">
+                <h1>
+                  {{ q.title }}
+                </h1>
+                <div class="flex justify-between w-full text-xs font-semibold lg:text-base text-start text-primary-50">
+                  <span class="font-medium">
+                    Last try:
+                    <span class="flex items-center gap-1 ">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                      </svg>
+                      {{ formatDate(findQuiz(q.slug)?.timestamp) }}
+                    </span> </span>
+                  <span class="flex items-center self-end gap-1">
+                    <svg xmlns=" http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
+                      stroke="currentColor" class="w-6 h-6">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    {{ formatTime(findQuiz(q.slug)?.time) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="relative w-full h-full gap-8 px-2 pb-4 overflow-hidden" v-else>
+              <img :src="q.img" alt=""
+                class="absolute top-0 left-0 z-10 object-cover object-center w-full h-full rounded-xl opacity-20">
+              <div class="relative z-20 flex flex-col justify-center w-full h-full">
+                <h1>
+                  {{ q.title }}
+                </h1>
+              </div>
+            </div>
+          </NuxtLink>
+        </div>
+
+      </div>
     </main>
+    <div class="absolute flex items-center justify-center w-full text-center bottom-4">
+      <span class="text-xs font-medium text-neutral-400 font-inter lg:text-base">
+        Made with 💚 by
+        <nuxt-link target="_BLANK" to="https://cricadev.com">
+          Cricadev
+        </nuxt-link>
+        & Designed with 💜 by
+        <nuxt-link target="_BLANK" to="https://www.linkedin.com/in/stefanny-ascencio/">
+          Tef.dsgn
+        </nuxt-link>
+      </span>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
+const { width } = useWindowSize();
 const colorMode = useColorMode()
 const { quizzes } = storeToRefs(useQuizStore());
 const findQuiz = (slug) => {
@@ -59,7 +126,7 @@ const formatDate = (timestamp) => {
   const date = new Date(timestamp);
   const day = ("0" + date.getDate()).slice(-2);
   const month = ("0" + (date.getMonth() + 1)).slice(-2);
-  const year = date.getFullYear();
+  const year = ("0" + date.getFullYear()).slice(-2);
 
   return `${day}/${month}/${year}`;
 }
@@ -84,63 +151,86 @@ useHead({
     }
   ]
 })
-const { height, width } = useWindowSize();
 
 const transformLowerDash = (str) => {
   return str.replace(/\s+/g, '-').toLowerCase()
 }
+
 const quizes = [
   {
     "id": "1",
-    "title": "Chemistry Quiz",
-    "slug": "chemistry-quiz"
+    "title": "General Science Quiz",
+    "slug": "general-science-quiz",
+    "img": "./quizes/02-general-science.png"
   },
   {
     "id": "2",
-    "title": "Physics Quiz",
-    "slug": "physics-quiz"
+    "title": "Math Quiz",
+    "slug": "math-quiz",
+    "img": "./quizes/01-math.png"
   },
   {
     "id": "3",
-    "title": "Biology Quiz",
-    "slug": "biology-quiz"
+    "title": "Computer Science Quiz",
+    "slug": "computer-science-quiz",
+    "img": "./quizes/03-computer-science.png"
   },
   {
     "id": "4",
-    "title": "Earth Science Quiz",
-    "slug": "earth-science-quiz"
+    "title": "History Quiz",
+    "slug": "history-quiz",
+    "img": "./quizes/04-history.png"
   },
   {
     "id": "5",
-    "title": "Space Quiz",
-    "slug": "space-quiz"
+    "title": "Geography Quiz",
+    "slug": "geography-quiz",
+    "img": "./quizes/05-geography.png"
   },
   {
     "id": "6",
-    "title": "Math Quiz",
-    "slug": "math-quiz"
+    "title": "Literature Quiz",
+    "slug": "literature-quiz",
+    "img": "./quizes/06-literature.png"
   },
   {
     "id": "7",
-    "title": "Computer Science Quiz",
-    "slug": "computer-science-quiz"
+    "title": "Arts Quiz",
+    "slug": "arts-quiz",
+    "img": "./quizes/07-art.png"
   },
   {
     "id": "8",
-    "title": "History Quiz",
-    "slug": "history-quiz"
+    "title": "Music Quiz",
+    "slug": "music-quiz",
+    "img": "./quizes/08-music.png"
   },
   {
     "id": "9",
-    "title": "Geography Quiz",
-    "slug": "geography-quiz"
+    "title": "Soccer Quiz",
+    "slug": "soccer-quiz",
+    "img": "./quizes/11-soccer.png"
   },
   {
     "id": "10",
-    "title": "Literature Quiz",
-    "slug": "literature-quiz"
+    "title": "Sports Quiz",
+    "slug": "sports-quiz",
+    "img": "./quizes/09-sports.png"
+  },
+  {
+    "id": "11",
+    "title": "Movies Quiz",
+    "slug": "movies-quiz",
+    "img": "./quizes/10-movies.png"
+  },
+  {
+    "id": "12",
+    "title": "Chess Quiz",
+    "slug": "chess-quiz",
+    "img": "./quizes/12-chess.png"
   }
 ]
+
 </script>
 <style scoped>
 .header {
@@ -156,17 +246,27 @@ main {
 }
 
 .carousel {
-  @apply flex flex-row items-center justify-center w-full overflow-hidden mx-auto relative gap-2 h-96;
+  @apply w-full overflow-hidden relative lg:h-80 hidden lg:block;
+}
+
+.carousel--mobile {
+  @apply w-full overflow-hidden h-96 grid grid-rows-2 grid-cols-1 lg:hidden;
+
 }
 
 .carousel--track {
-  @apply flex flex-row items-center justify-center w-screen overflow-hidden absolute top-0 left-0 h-full;
+  @apply w-fit overflow-hidden absolute top-0 h-full flex gap-4;
 
 }
 
-/*
+.carousel--track--mobile {
+  @apply w-fit overflow-hidden flex gap-4 relative top-0 left-0;
+
+}
+
+
 .carousel--track--1 {
-  animation: infinite-move-1 10s linear infinite;
+  animation: infinite-move-1 30s linear infinite;
 
   @keyframes infinite-move-1 {
     0% {
@@ -185,7 +285,8 @@ main {
 }
 
 .carousel--track--2 {
-  animation: infinite-move-2 10s linear infinite;
+  margin-left: 16px;
+  animation: infinite-move-2 30s linear infinite;
 
 
   @keyframes infinite-move-2 {
@@ -202,9 +303,58 @@ main {
     }
   }
 }
-*/
-.carousel--item {
-  @apply text-center flex flex-col items-center justify-center bg-primary rounded-xl shadow-xl h-full m-4 text-bgPrimary max-w-md w-full dark:bg-darkPrimary dark:text-darkBgPrimary font-bold;
 
+.carousel--track--mobile--1 {
+  @apply row-start-1 row-end-2;
+  animation: infinite-move-1 30s linear infinite;
+
+  @keyframes infinite-move-1 {
+    0% {
+      transform: translateX(0%);
+    }
+
+    50% {
+      transform: translateX(-50%);
+    }
+
+    100% {
+      transform: translateX(-100%);
+
+    }
+  }
+
+}
+
+.carousel--track--mobile--2 {
+  @apply row-start-2 row-end-3;
+
+  animation: infinite-move-2 30s linear infinite;
+
+  @keyframes infinite-move-2 {
+    0% {
+      transform: translateX(0%);
+    }
+
+    50% {
+      transform: translateX(50%);
+    }
+
+    100% {
+      transform: translateX(100%);
+    }
+  }
+}
+
+
+.carousel--item {
+  @apply text-center flex flex-col items-center justify-center bg-primary rounded-xl shadow-xl text-bgPrimary w-44 lg:w-96 h-full dark:bg-[#475569] font-bold;
+
+}
+
+.container-grid {
+  background-image: url('../assets/images/bg-quizgod.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
 }
 </style>

@@ -2,7 +2,7 @@
   <div class="grid h-screen place-items-center" v-if="questions">
 
     <TransitionGroup name="result">
-      <form v-if="!isResult" class="absolute flex flex-col items-start justify-center max-w-2xl gap-4"
+      <form v-if="!isResult" class="absolute flex flex-col items-start justify-center max-w-2xl gap-4 px-3"
         @submit.prevent="handleQuestionSubmit">
         <!-- ALERT -->
         <Transition name="slide-down">
@@ -48,7 +48,7 @@
             {{ formatTime(elapsed) }}
           </span>
         </div>
-        <h2 class="text-5xl font-black leading-tight text-start text-primary dark:text-darkPrimary">
+        <h2 class="text-[2rem] font-black leading-tight lg:text-5xl text-start text-primary dark:text-darkPrimary">
           {{ question.question }}</h2>
         <div class="flex flex-col w-full gap-2 mx-auto mt-4">
           <label v-for="answer in question.answers" class="flex items-center w-full">
@@ -107,7 +107,7 @@
         </div>
       </div>
       <div class="border-4 rounded-lg leaderboard">
-        <table class="">
+        <table v-if="!loadingLeaderboard" class="">
           <thead class="">
             <tr class="bg-white" :class="[{ 'text-red': countCorrectAnswers <= 3 }, {
               'text-primary': countCorrectAnswers > 3 && countCorrectAnswers <= 5
@@ -118,13 +118,29 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in leaderboardData" class="" :key="item.id">
+            <tr v-for="item in leaderboard" class="" :key="item.id">
               <td class="py-4 pl-6 pr-24">{{ item.name }}</td>
               <td class="pl-12 pr-8">{{ formatDate(item.submitted_at) }}</td>
               <td class="pl-4 pr-16 ">{{ formatTime(item.time_taken, 3) }}</td>
             </tr>
           </tbody>
         </table>
+        <div class="" v-else>
+          <div class="lds-spinner">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -153,13 +169,12 @@ const formatDate = (timestamp) => {
 const supabase = useSupabaseClient();
 const resultSent = ref(false)
 const isResult = ref(false)
-const leaderboardData = ref([])
 const props = defineProps<{
   questions: Question[] | null
 }>()
 const route = useRoute();
 const quizStore = useQuizStore();
-const { quizzes, name } = storeToRefs(quizStore);
+const { quizzes, name, leaderboard } = storeToRefs(quizStore);
 const { updateQuizResults, readLeaderboard } = quizStore;
 const radioButtons = ref(null)
 const countCorrectAnswers = ref(0)
@@ -170,7 +185,7 @@ const isSubmit = ref(false);
 const questionIndex = ref(0)
 const elapsedFinal = ref(null)
 const startTime = ref(Date.now());
-
+const loadingLeaderboard = ref(true);
 
 const reloadPage = () => {
   window.location.reload();
@@ -185,11 +200,17 @@ watch(isResult, (newValue) => {
     elapsedFinal.value = elapsed.value;
   }
 });
+watch(resultSent, (newValue) => {
+  if (newValue) {
+    setTimeout(async () => {
+      const data = await readLeaderboard(route.params.slug);
+      if (data.data.value) loadingLeaderboard.value = false;
+    }, 3000)
 
-onMounted(async () => {
-  const data = await readLeaderboard(route.params.slug);
-  leaderboardData.value = data?.data.value;
-})
+  }
+});
+
+
 const submitResults = () => {
   const results = {
     name: name.value !== '' ? name.value : findQuiz(route.params.slug)?.name,
@@ -323,5 +344,100 @@ watchEffect(() => {
 
 .radio--active+span {
   @apply bg-primary text-white border-primary;
+}
+
+.lds-spinner {
+  color: official;
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.lds-spinner div {
+  transform-origin: 40px 40px;
+  animation: lds-spinner 1.2s linear infinite;
+}
+
+.lds-spinner div:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 3px;
+  left: 37px;
+  width: 6px;
+  height: 18px;
+  border-radius: 20%;
+  background: #fff;
+}
+
+.lds-spinner div:nth-child(1) {
+  transform: rotate(0deg);
+  animation-delay: -1.1s;
+}
+
+.lds-spinner div:nth-child(2) {
+  transform: rotate(30deg);
+  animation-delay: -1s;
+}
+
+.lds-spinner div:nth-child(3) {
+  transform: rotate(60deg);
+  animation-delay: -0.9s;
+}
+
+.lds-spinner div:nth-child(4) {
+  transform: rotate(90deg);
+  animation-delay: -0.8s;
+}
+
+.lds-spinner div:nth-child(5) {
+  transform: rotate(120deg);
+  animation-delay: -0.7s;
+}
+
+.lds-spinner div:nth-child(6) {
+  transform: rotate(150deg);
+  animation-delay: -0.6s;
+}
+
+.lds-spinner div:nth-child(7) {
+  transform: rotate(180deg);
+  animation-delay: -0.5s;
+}
+
+.lds-spinner div:nth-child(8) {
+  transform: rotate(210deg);
+  animation-delay: -0.4s;
+}
+
+.lds-spinner div:nth-child(9) {
+  transform: rotate(240deg);
+  animation-delay: -0.3s;
+}
+
+.lds-spinner div:nth-child(10) {
+  transform: rotate(270deg);
+  animation-delay: -0.2s;
+}
+
+.lds-spinner div:nth-child(11) {
+  transform: rotate(300deg);
+  animation-delay: -0.1s;
+}
+
+.lds-spinner div:nth-child(12) {
+  transform: rotate(330deg);
+  animation-delay: 0s;
+}
+
+@keyframes lds-spinner {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
 }
 </style>

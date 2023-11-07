@@ -1,12 +1,12 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
-import type { Quiz } from "~/types/index"
+import type { Quiz, LeaderboardEntry } from "~/types/index"
 export const useQuizStore = defineStore('quizStore', () => {
   const { chatCompletion } = useChatgpt()
   const supabase = useSupabaseClient()
   const name = ref('');
   const quizzes = ref([] as Quiz[]);
   const storedQuizzes = ref([] as Quiz[])
-
+  const leaderboard = ref([])
   onMounted(() => {
     storedQuizzes.value = JSON.parse(localStorage.getItem('quizzes') || '[]');
 
@@ -25,38 +25,46 @@ export const useQuizStore = defineStore('quizStore', () => {
     if (quiz) {
       return quiz;
     }
+    const maxRetries = 3; // Maximum number of retries
+    let retries = 0; // Current retry count
 
-    try {
-      const rawResponse = await chatCompletion(message.value);
-      const parsedResponse = JSON.parse(rawResponse);
+    while (retries < maxRetries) {
+      try {
+        const rawResponse = await chatCompletion(message.value);
+        const parsedResponse = JSON.parse(rawResponse);
 
-      if (parsedResponse && parsedResponse.questions) {
-        const newQuiz = {
-          id: slug,
-          name: name.value,
-          correctAnswers: 0,
-          time: 0,
-          questions: parsedResponse.questions,
-          timestamp: new Date().getTime(), // Store the timestamp of when the quiz was created
-        };
+        if (parsedResponse && parsedResponse.questions) {
+          const newQuiz = {
+            id: slug,
+            name: name.value,
+            correctAnswers: 0,
+            time: 0,
+            questions: parsedResponse.questions,
+            timestamp: new Date().getTime(), // Store the timestamp of when the quiz was created
+          };
 
-        // Push the new quiz to the array
-        storedQuizzes.value.push(newQuiz);
+          // Push the new quiz to the array
+          storedQuizzes.value.push(newQuiz);
 
-        // Update the quizzes ref
-        quizzes.value = storedQuizzes.value;
+          // Update the quizzes ref
+          quizzes.value = storedQuizzes.value;
 
-        // Store the updated quizzes array back to localStorage
-        localStorage.setItem('quizzes', JSON.stringify(storedQuizzes.value));
+          // Store the updated quizzes array back to localStorage
+          localStorage.setItem('quizzes', JSON.stringify(storedQuizzes.value));
 
-        // Return the new quiz
-        return newQuiz;
-      } else {
-        console.error('Unexpected response structure');
+          // Return the new quiz
+          return newQuiz;
+        } else {
+          console.error('Unexpected response structure');
+          retries++;
+        }
+      } catch (error) {
+        console.error('An error occurred:', error);
+        retries++;
       }
-    } catch (error) {
-      console.error('An error occurred:', error);
     }
+
+    throw new Error('Failed to fetch quiz after ' + maxRetries + ' attempts');
   };
 
   async function submitQuizResults(slug, results, timeStamp) {
@@ -81,6 +89,7 @@ export const useQuizStore = defineStore('quizStore', () => {
         if (error) {
           throw error;
         }
+        console.log(data, 'data from update')
         return data;
       } else if (existingResults.length === 0) {
         // If a result doesn't exist, create it
@@ -93,6 +102,7 @@ export const useQuizStore = defineStore('quizStore', () => {
         if (error) {
           throw error;
         }
+        console.log(data, 'data from insert')
         return data;
       }
     } catch (error) {
@@ -151,7 +161,7 @@ export const useQuizStore = defineStore('quizStore', () => {
               console.error('Error getting updated leaderboard:', updatedError);
               return;
             }
-
+            console.log(newData)
             updatedData.value = newData;
           }
         )
@@ -173,24 +183,29 @@ export const useQuizStore = defineStore('quizStore', () => {
               console.error('Error getting updated leaderboard:', updatedError);
               return;
             }
+            console.log(newData)
 
             updatedData.value = newData;
           }
         )
         .subscribe();
-
+      leaderboard.value = updatedData.value
       return { data: updatedData, leaderboardInserts, leaderboardUpdates };
+
     } catch (error) {
       console.error('Error getting leaderboard:', error);
     }
   }
+
+
 
   return {
     quizzes,
     fetchQuizBySlug,
     updateQuizResults,
     name,
-    readLeaderboard
+    readLeaderboard,
+    leaderboard
   };
 });
 if (import.meta.hot) {
