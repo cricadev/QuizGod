@@ -16,7 +16,7 @@ body {
   @apply bg-darkBgPrimary;
 }
 .button-primary {
-  @apply bg-primary text-white p-3 hover:shadow-md hover:shadow-primary/25 rounded-md;
+  @apply bg-primary text-white p-3 hover:shadow-sm hover:shadow-primary/25 rounded-md;
 }
 .button-primary:focus {
   @apply outline-none border-primary-100 border-2;

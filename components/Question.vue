@@ -200,6 +200,7 @@ watch(isResult, (newValue) => {
     elapsedFinal.value = elapsed.value;
   }
 });
+
 watch(resultSent, (newValue) => {
   if (newValue) {
     setTimeout(async () => {

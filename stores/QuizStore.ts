@@ -183,7 +183,6 @@ export const useQuizStore = defineStore('quizStore', () => {
               console.error('Error getting updated leaderboard:', updatedError);
               return;
             }
-            console.log(newData)
 
             updatedData.value = newData;
           }
