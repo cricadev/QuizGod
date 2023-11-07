@@ -14,8 +14,8 @@
         <div v-for="car in 2" :key="car" class="carousel--track" :class="'carousel--track--' + car" ref="carousel">
           <NuxtLink class="carousel--item" v-for="q in quizes" :key="q.id" :to="'/quiz/' + transformLowerDash(q.title)">
             <div class="relative w-full h-full gap-8 px-2 pb-4 overflow-hidden" v-if="findQuiz(q.slug)">
-              <img :src="q.img" alt=""
-                class="absolute top-0 left-0 z-10 object-cover object-center w-full h-full opacity-20 rounded-xl">
+              <nuxt-img provider="cloudinary" :src="q.img" alt=""
+                class="absolute top-0 left-0 z-10 object-cover object-center w-full h-full opacity-20 rounded-xl" />
               <div class="relative z-20 flex flex-col justify-end w-full h-full gap-6">
                 <h1>
                   {{ q.title }}
@@ -43,8 +43,8 @@
               </div>
             </div>
             <div class="relative w-full h-full gap-8 px-2 pb-4 overflow-hidden" v-else>
-              <img :src="q.img" alt=""
-                class="absolute top-0 left-0 z-10 object-cover object-center w-full h-full rounded-xl opacity-20">
+              <nuxt-img provider="cloudinary" :src="q.img" alt=""
+                class="absolute top-0 left-0 z-10 object-cover object-center w-full h-full rounded-xl opacity-20" />
               <div class="relative z-20 flex flex-col justify-center w-full h-full">
                 <h1>
                   {{ q.title }}
@@ -59,8 +59,8 @@
           ref="carousel">
           <NuxtLink class="carousel--item" v-for="q in quizes" :key="q.id" :to="'/quiz/' + transformLowerDash(q.title)">
             <div class="relative w-full h-full gap-8 px-2 pb-4 overflow-hidden" v-if="findQuiz(q.slug)">
-              <img :src="q.img" alt=""
-                class="absolute top-0 left-0 z-10 object-cover object-center w-full h-full opacity-20 rounded-xl">
+              <nuxt-img provider="cloudinary" :src="q.img" alt=""
+                class="absolute top-0 left-0 z-10 object-cover object-center w-full h-full opacity-20 rounded-xl" />
               <div class="relative z-20 flex flex-col justify-end w-full h-full gap-6">
                 <h1>
                   {{ q.title }}
@@ -88,8 +88,8 @@
               </div>
             </div>
             <div class="relative w-full h-full gap-8 px-2 pb-4 overflow-hidden" v-else>
-              <img :src="q.img" alt=""
-                class="absolute top-0 left-0 z-10 object-cover object-center w-full h-full rounded-xl opacity-20">
+              <nuxt-img provider="cloudinary" :src="q.img" alt=""
+                class="absolute top-0 left-0 z-10 object-cover object-center w-full h-full rounded-xl opacity-20" />
               <div class="relative z-20 flex flex-col justify-center w-full h-full">
                 <h1>
                   {{ q.title }}
@@ -102,8 +102,8 @@
           ref="carousel">
           <NuxtLink class="carousel--item" v-for="q in quizes" :key="q.id" :to="'/quiz/' + transformLowerDash(q.title)">
             <div class="relative w-full h-full gap-8 px-2 pb-4 overflow-hidden" v-if="findQuiz(q.slug)">
-              <img :src="q.img" alt=""
-                class="absolute top-0 left-0 z-10 object-cover object-center w-full h-full opacity-20 rounded-xl">
+              <nuxt-img provider="cloudinary" :src="q.img" alt=""
+                class="absolute top-0 left-0 z-10 object-cover object-center w-full h-full opacity-20 rounded-xl" />
               <div class="relative z-20 flex flex-col justify-end w-full h-full gap-6">
                 <h1>
                   {{ q.title }}
@@ -131,8 +131,9 @@
               </div>
             </div>
             <div class="relative w-full h-full gap-8 px-2 pb-4 overflow-hidden" v-else>
-              <img :src="q.img" alt=""
-                class="absolute top-0 left-0 z-10 object-cover object-center w-full h-full rounded-xl opacity-20">
+              <nuxt-img provider="cloudinary" :src="q.img" alt=""
+                class="absolute top-0 left-0 z-10 object-cover object-center w-full h-full rounded-xl opacity-20" />
+
               <div class="relative z-20 flex flex-col justify-center w-full h-full">
                 <h1>
                   {{ q.title }}
@@ -158,6 +159,7 @@
   </div>
 </template>
 <script setup lang="ts">
+
 const { width } = useWindowSize();
 const colorMode = useColorMode()
 const { quizzes } = storeToRefs(useQuizStore());
@@ -203,73 +205,73 @@ const quizes = [
     "id": "1",
     "title": "General Science Quiz",
     "slug": "general-science-quiz",
-    "img": "./quizes/02-general-science.png"
+    "img": "02-general-science_cykfgi.png"
   },
   {
     "id": "2",
     "title": "Math Quiz",
     "slug": "math-quiz",
-    "img": "./quizes/01-math.png"
+    "img": "01-math_c8nkhs.png"
   },
   {
     "id": "3",
     "title": "Computer Science Quiz",
     "slug": "computer-science-quiz",
-    "img": "./quizes/03-computer-science.png"
+    "img": "03-computer-science_g0l5hr.png"
   },
   {
     "id": "4",
     "title": "History Quiz",
     "slug": "history-quiz",
-    "img": "./quizes/04-history.png"
+    "img": "04-history_bna6fb.png"
   },
   {
     "id": "5",
     "title": "Geography Quiz",
     "slug": "geography-quiz",
-    "img": "./quizes/05-geography.png"
+    "img": "05-geography_a6h9u8.png"
   },
   {
     "id": "6",
     "title": "Literature Quiz",
     "slug": "literature-quiz",
-    "img": "./quizes/06-literature.png"
+    "img": "06-literature_jixsta.png"
   },
   {
     "id": "7",
     "title": "Arts Quiz",
     "slug": "arts-quiz",
-    "img": "./quizes/07-art.png"
+    "img": "07-art_x3whim.png"
   },
   {
     "id": "8",
     "title": "Music Quiz",
     "slug": "music-quiz",
-    "img": "./quizes/08-music.png"
+    "img": "08-music_izddrl.png"
   },
   {
     "id": "9",
     "title": "Soccer Quiz",
     "slug": "soccer-quiz",
-    "img": "./quizes/11-soccer.png"
+    "img": "11-soccer_eg0jft.png"
   },
   {
     "id": "10",
     "title": "Sports Quiz",
     "slug": "sports-quiz",
-    "img": "./quizes/09-sports.png"
+    "img": "09-sports_w5qyh1.png"
   },
   {
     "id": "11",
     "title": "Movies Quiz",
     "slug": "movies-quiz",
-    "img": "./quizes/10-movies.png"
+    "img": "10-movies_dlssqk.png"
   },
   {
     "id": "12",
     "title": "Chess Quiz",
     "slug": "chess-quiz",
-    "img": "./quizes/12-chess.png"
+    "img": "12-chess_ctswv8.png"
   }
 ]
 
@@ -440,7 +442,7 @@ main {
 }
 
 .container-grid {
-  background-image: url('../assets/images/bg-quizgod.png');
+  background-image: url('https://res.cloudinary.com/ddc0cce3m/image/upload/v1699379792/QuizGod/bg-quizgod_zse0pb.png');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;

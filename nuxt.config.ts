@@ -7,7 +7,8 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
     "@pinia/nuxt",
     'nuxt-chatgpt',
-    '@nuxtjs/supabase'
+    '@nuxtjs/supabase',
+    '@nuxt/image'
   ],
   colorMode: {
     preference: 'system', // default value of $colorMode.preference
@@ -35,5 +36,11 @@ export default defineNuxtConfig({
       callback: '/confirm',
       exclude: ['/', '/quiz/*']
     }
-  }
+  },
+  image: {
+    cloudinary: {
+      baseURL: "https://res.cloudinary.com/ddc0cce3m/image/upload/v1699379795/QuizGod/",
+    },
+  },
+
 })
