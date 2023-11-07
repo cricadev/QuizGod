@@ -70,7 +70,7 @@ const messagesWhileLoading = computed(() => {
 onMounted(() => {
   setTimeout(() => {
     tookTooLong.value = true;
-  }, 3000);
+  }, 5000);
 
 })
 

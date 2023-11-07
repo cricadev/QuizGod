@@ -219,6 +219,10 @@ const submitResults = () => {
   }
   quizStore.updateQuizResults(route.params.slug, results);
 
+  setTimeout(() => {
+    name.value = '';
+
+  }, 1000)
 }
 
 const formatTime = (milliseconds: number, digits = 2) => {
