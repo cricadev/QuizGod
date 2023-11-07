@@ -82,20 +82,20 @@
     </TransitionGroup>
 
     <div v-if="isResult && resultSent"
-      class="flex items-center justify-center w-screen h-screen gap-32 text-center text-white animate__animated animate__zoomIn animate__faster"
+      class="flex flex-col items-center justify-center w-screen h-screen gap-12 overflow-x-hidden overflow-y-hidden text-center text-white lg:grid-cols-2 lg:gap-16 lg:grid animate__animated animate__zoomIn animate__faster lg:px-8 xl:px-32 2xl:px-64"
       :class="[{ 'bg-red': countCorrectAnswers <= 3 }, {
         'bg-primary': countCorrectAnswers > 3 && countCorrectAnswers <= 5
       }]">
-      <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-4 lg:justify-self-end ">
         <div class="flex flex-col gap-8">
-          <div class="flex flex-col gap-2 text-start">
+          <div class="flex flex-col gap-2 lg:text-start">
             <span class="text-base font-semibold">
               {{ countCorrectAnswers }} / {{ questions.length }} answers correct
             </span>
-            <span class="text-5xl font-black animate-pulse"
+            <span class="text-3xl font-black lg:text-5xl animate-pulse"
               v-html="formatTime(elapsedFinal) + 's<br>' + responseToResult.replace(/\n/g, '<br>')"></span>
           </div>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center justify-center gap-2 lg:justify-start">
             <button class="button-secondary" style="color:white;" @click="reloadPage"> Try
               again </button>
             <nuxt-link to="/" class="flex button-tertiary"> <svg xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -112,16 +112,16 @@
             <tr class="bg-white" :class="[{ 'text-red': countCorrectAnswers <= 3 }, {
               'text-primary': countCorrectAnswers > 3 && countCorrectAnswers <= 5
             }]">
-              <th class="py-4 pl-4 pr-24 bg-white">Player</th>
-              <th class="pr-8 bg-white">Date</th>
-              <th class="pr-16 bg-white">Time</th>
+              <th class="py-4 pr-10 bg-white lg:pl-4 lg:pr-24">Player</th>
+              <th class="bg-white lg:pr-8">Date</th>
+              <th class="bg-white lg:pr-16">Time</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody class="block h-80">
             <tr v-for="item in leaderboard" class="" :key="item.id">
-              <td class="py-4 pl-6 pr-24">{{ item.name }}</td>
-              <td class="pl-12 pr-8">{{ formatDate(item.submitted_at) }}</td>
-              <td class="pl-4 pr-16 ">{{ formatTime(item.time_taken, 3) }}</td>
+              <td class="py-4 pl-2 lg:pl-6 lg:pr-24">{{ item.name }}</td>
+              <td class="pl-12 lg:pr-8">{{ formatDate(item.submitted_at) }}</td>
+              <td class="pl-4 pr-2 lg:pr-16 ">{{ formatTime(item.time_taken, 3) }}</td>
             </tr>
           </tbody>
         </table>
@@ -439,5 +439,23 @@ watchEffect(() => {
   100% {
     opacity: 0;
   }
+}
+
+
+tbody {
+  display: block;
+  height: clamp(100px, 35vh, 300px);
+  overflow: auto;
+}
+
+thead,
+tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+thead {
+  width: calc(100%)
 }
 </style>

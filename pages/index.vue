@@ -55,7 +55,7 @@
         </div>
       </div>
       <div class="carousel carousel--mobile">
-        <div v-for="car in 2" :key="car" class="carousel--track--mobile" :class="'carousel--track--mobile--' + car"
+        <div v-for="car in 2" :key="car" class="carousel--track--mobile-1" :class="'carousel--track--mobile--1-' + car"
           ref="carousel">
           <NuxtLink class="carousel--item" v-for="q in quizes" :key="q.id" :to="'/quiz/' + transformLowerDash(q.title)">
             <div class="relative w-full h-full gap-8 px-2 pb-4 overflow-hidden" v-if="findQuiz(q.slug)">
@@ -98,7 +98,49 @@
             </div>
           </NuxtLink>
         </div>
-
+        <div v-for="car in 2" :key="car" class="carousel--track--mobile-2" :class="'carousel--track--mobile--2-' + car"
+          ref="carousel">
+          <NuxtLink class="carousel--item" v-for="q in quizes" :key="q.id" :to="'/quiz/' + transformLowerDash(q.title)">
+            <div class="relative w-full h-full gap-8 px-2 pb-4 overflow-hidden" v-if="findQuiz(q.slug)">
+              <img :src="q.img" alt=""
+                class="absolute top-0 left-0 z-10 object-cover object-center w-full h-full opacity-20 rounded-xl">
+              <div class="relative z-20 flex flex-col justify-end w-full h-full gap-6">
+                <h1>
+                  {{ q.title }}
+                </h1>
+                <div class="flex justify-between w-full text-xs font-semibold lg:text-base text-start text-primary-50">
+                  <span class="font-medium">
+                    Last try:
+                    <span class="flex items-center gap-1 ">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                      </svg>
+                      {{ formatDate(findQuiz(q.slug)?.timestamp) }}
+                    </span> </span>
+                  <span class="flex items-center self-end gap-1">
+                    <svg xmlns=" http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
+                      stroke="currentColor" class="w-6 h-6">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    {{ formatTime(findQuiz(q.slug)?.time) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="relative w-full h-full gap-8 px-2 pb-4 overflow-hidden" v-else>
+              <img :src="q.img" alt=""
+                class="absolute top-0 left-0 z-10 object-cover object-center w-full h-full rounded-xl opacity-20">
+              <div class="relative z-20 flex flex-col justify-center w-full h-full">
+                <h1>
+                  {{ q.title }}
+                </h1>
+              </div>
+            </div>
+          </NuxtLink>
+        </div>
       </div>
     </main>
     <div class="absolute flex items-center justify-center w-full text-center bottom-4">
@@ -250,7 +292,7 @@ main {
 }
 
 .carousel--mobile {
-  @apply w-full overflow-hidden h-96 grid grid-rows-2 grid-cols-1 lg:hidden;
+  @apply w-full overflow-hidden h-96 grid grid-rows-2 grid-cols-1 lg:hidden gap-4;
 
 }
 
@@ -259,8 +301,13 @@ main {
 
 }
 
-.carousel--track--mobile {
+.carousel--track--mobile-1 {
   @apply w-fit overflow-hidden flex gap-4 relative top-0 left-0;
+
+}
+
+.carousel--track--mobile-2 {
+  @apply w-fit overflow-hidden flex gap-4 relative top-0 px-4 mx-4;
 
 }
 
@@ -304,11 +351,11 @@ main {
   }
 }
 
-.carousel--track--mobile--1 {
+.carousel--track--mobile--1-1 {
   @apply row-start-1 row-end-2;
-  animation: infinite-move-1 30s linear infinite;
+  animation: infinite-move-mobile-1-1 30s linear infinite;
 
-  @keyframes infinite-move-1 {
+  @keyframes infinite-move-mobile-1-1 {
     0% {
       transform: translateX(0%);
     }
@@ -325,12 +372,33 @@ main {
 
 }
 
-.carousel--track--mobile--2 {
+.carousel--track--mobile--1-2 {
+  @apply row-start-1 row-end-2;
+  animation: infinite-move-mobile-1-2 30s linear infinite;
+
+  @keyframes infinite-move-mobile-1-2 {
+    0% {
+      transform: translateX(100%);
+    }
+
+    50% {
+      transform: translateX(50%);
+    }
+
+    100% {
+      transform: translateX(0%);
+
+    }
+  }
+
+}
+
+.carousel--track--mobile--2-1 {
   @apply row-start-2 row-end-3;
 
-  animation: infinite-move-2 30s linear infinite;
+  animation: infinite-move-mobile-2-1 30s linear infinite;
 
-  @keyframes infinite-move-2 {
+  @keyframes infinite-move-mobile-2-1 {
     0% {
       transform: translateX(0%);
     }
@@ -341,6 +409,26 @@ main {
 
     100% {
       transform: translateX(100%);
+    }
+  }
+}
+
+.carousel--track--mobile--2-2 {
+  @apply row-start-2 row-end-3;
+
+  animation: infinite-move-mobile-2-2 30s linear infinite;
+
+  @keyframes infinite-move-mobile-2-2 {
+    0% {
+      transform: translateX(-100%);
+    }
+
+    50% {
+      transform: translateX(-50%);
+    }
+
+    100% {
+      transform: translateX(0%);
     }
   }
 }
